@@ -1,4 +1,4 @@
-## Page structure
+## Planned Page structure
 
 HTML Routes:
 ```
@@ -26,5 +26,4 @@ API Routes:
     /books
         /$id
         /recommend
-        
 ```
