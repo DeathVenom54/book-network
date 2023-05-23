@@ -1,27 +1,29 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
-from handlers.auth import verify_token
+from api_routers.auth.auth import router as auth_router, RequiresLoginException
+from routers.main import router as main_router
 
 app = FastAPI()
-templates = Jinja2Templates(directory='templates')
 
+# non_auth_routes = ['/login', '/register', '/api/auth/login', '/api/auth/register']
 
-@app.middleware('http')
-def auth_middleware(request: Request, call_next):
-    token = request.cookies.get('token')
-    if verify_token(token):
-        return call_next(request)
-    else:
-        return RedirectResponse(url='/login')
+# @app.middleware('http')
+# async def auth_middleware(request: Request, call_next):
+#     if request.url.path in non_auth_routes:
+#         return await call_next(request)
+#     token = request.cookies.get('token')
+#     if token:
+#         return await call_next(request)
+#     else:
+#         print(f'no token found for {request.url.path}')
+#         return RedirectResponse(url='/login')
 
 app.mount('/static', StaticFiles(directory='static'), name='static')
 
-@app.get("/")
-def root(request: Request):
-    return templates.TemplateResponse('home.html', {'request': request})
+@app.exception_handler(RequiresLoginException)
+async def requires_login_handler(request: Request, e: RequiresLoginException):
+    return RedirectResponse(url='/login')
 
-@app.get('/login')
-def login(request: Request):
-    return templates.TemplateResponse('login.html', {'request': request})
+app.include_router(main_router)
+app.include_router(auth_router)
