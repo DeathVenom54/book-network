@@ -10,6 +10,10 @@ templates = Jinja2Templates(directory='templates')
 def login(request: Request):
     return templates.TemplateResponse('login.html', {'request': request})
 
+@router.get('/register')
+def login(request: Request):
+    return templates.TemplateResponse('register.html', {'request': request})
+
 @router.get('/logout')
 def login(response: Response):
     response.delete_cookie(key='token', httponly=True)
@@ -17,4 +21,5 @@ def login(response: Response):
 
 @router.get("/")
 def root(request: Request, user: CurrentUserDep):
+    print(user)
     return templates.TemplateResponse('home.html', {'request': request})
