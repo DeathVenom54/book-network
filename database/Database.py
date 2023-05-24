@@ -10,9 +10,9 @@ class Database:
     def connect(self):
         self.db = connector.connect(host=self.host, user=self.user, password=self.password)
         cursor = self.db.cursor()
-        cursor.execute("CREATE DATABASE IF NOT EXISTS book_network;")
-        cursor.execute("USE book_network;")
-        cursor.execute('CREATE TABLE IF NOT EXISTS users (username VARCHAR(30) PRIMARY KEY, password VARCHAR(255) NOT NULL, display_name VARCHAR(30), bio VARCHAR(500));')
+        with open('database/definition.sql', 'r') as file:
+            for line in file:
+                cursor.execute(line)
         cursor.close()
         self.db.commit()
 

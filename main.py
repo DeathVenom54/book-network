@@ -9,19 +9,6 @@ from routers.main import router as main_router
 app = FastAPI()
 connect_to_db()
 
-# non_auth_routes = ['/login', '/register', '/api/auth/login', '/api/auth/register']
-
-# @app.middleware('http')
-# async def auth_middleware(request: Request, call_next):
-#     if request.url.path in non_auth_routes:
-#         return await call_next(request)
-#     token = request.cookies.get('token')
-#     if token:
-#         return await call_next(request)
-#     else:
-#         print(f'no token found for {request.url.path}')
-#         return RedirectResponse(url='/login')
-
 app.mount('/static', StaticFiles(directory='static'), name='static')
 
 @app.exception_handler(RequiresLoginException)
