@@ -57,6 +57,16 @@ class User:
         cursor.close()
         self.db.commit()
 
+    class Book:
+        def __init__(self, user, title, author, genre, description, cover_url, book_url):
+            self.user = user
+            self.title = title
+            self.author = author
+            self.genre = genre
+            self.description = description
+            self.cover_url = cover_url
+            self.book_url = book_url
+
 
 class UserExistsException(Exception): ...
 
