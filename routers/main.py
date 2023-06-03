@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Response
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-from api_routers.auth.auth import CurrentUserDep
+from routers.api.auth import CurrentUserDep
 
 router = APIRouter()
 templates = Jinja2Templates(directory='templates')
@@ -21,5 +21,4 @@ def login(response: Response):
 
 @router.get("/")
 def root(request: Request, user: CurrentUserDep):
-    print(user)
     return templates.TemplateResponse('home.html', {'request': request})

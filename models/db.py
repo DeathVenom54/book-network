@@ -1,4 +1,4 @@
-from database.Database import Database
+from models.Database import Database
 
 DB_HOST = 'localhost'
 DB_USER = 'root'

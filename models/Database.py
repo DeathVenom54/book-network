@@ -1,4 +1,6 @@
 import mysql.connector as connector
+import requests
+
 
 class Database:
     def __init__(self, host, user, password):
@@ -10,7 +12,7 @@ class Database:
     def connect(self):
         self.db = connector.connect(host=self.host, user=self.user, password=self.password)
         cursor = self.db.cursor()
-        with open('database/definition.sql', 'r') as file:
+        with open('models/definition.sql', 'r') as file:
             for line in file:
                 cursor.execute(line)
         cursor.close()
@@ -57,22 +59,14 @@ class User:
         cursor.close()
         self.db.commit()
 
-    class Book:
-        def __init__(self, user, title, author, genre, description, cover_url, book_url):
-            self.user = user
-            self.title = title
-            self.author = author
-            self.genre = genre
-            self.description = description
-            self.cover_url = cover_url
-            self.book_url = book_url
+    class UserBook:
+        def __init__(self, username, work_id, action, wtr_date=None, rng_date=None, rd_date=None):
+            self.username = username
+            self.work_id = work_id
+            self.action = action
+            self.wtr_date = wtr_date
+            self.rng_date = rng_date
+            self.rd_date = rd_date
 
 
 class UserExistsException(Exception): ...
-
-# testing
-if __name__ == '__main__':
-    db = Database('localhost', 'root', 'passmysql')
-    db.connect()
-    db.create_user('dv', 'dv', 'DV Display Name', 'I am the creator of this website', '100')
-    print('Test passed')

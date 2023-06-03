@@ -5,4 +5,6 @@ run:
 dev:
 	uvicorn main:app --reload
 testdb:
-	python3 database/database.py
+	python3 models/Database.py
+testbook:
+	python3 models/Book.py

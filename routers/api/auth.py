@@ -6,8 +6,8 @@ from fastapi.responses import RedirectResponse
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 
-from database.Database import UserExistsException
-from database.db import get_db
+from models.Database import UserExistsException
+from models.db import get_db
 
 class StatusCode:
     UserExists = 600
@@ -46,7 +46,6 @@ CurrentUserDep = Annotated[str, Depends(current_user)]
 async def login(req: Request, username: str = Form(), password: str = Form()):
     db = get_db()
     user = db.get_user(username)
-    print(user)
     if user and pwd_context.verify(password, user.password):
         res = RedirectResponse(url='/', status_code=302)
         res.set_cookie(key='token', value=create_token(username, req.client.host))
