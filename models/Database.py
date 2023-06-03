@@ -1,5 +1,5 @@
 import mysql.connector as connector
-import requests
+from models.Book import BookData
 
 
 class Database:
@@ -40,6 +40,16 @@ class Database:
         else:
             return None
 
+class UserBook:
+    def __init__(self, username, book_data, action, wtr_date=None, rng_date=None, rd_date=None):
+        self.username = username
+        self.book_data = book_data
+        self.action = action
+        self.wtr_date = wtr_date
+        self.rng_date = rng_date
+        self.rd_date = rd_date
+
+
 class User:
     def __init__(self, username, password, db, display_name = None, bio = None):
         self.username = username
@@ -58,15 +68,19 @@ class User:
         cursor.execute('UPDATE users SET display_name = %s, bio = %s WHERE username = %s;', (dn, b, self.username))
         cursor.close()
         self.db.commit()
+        self.display_name = dn
+        self.bio = b
 
-    class UserBook:
-        def __init__(self, username, work_id, action, wtr_date=None, rng_date=None, rd_date=None):
-            self.username = username
-            self.work_id = work_id
-            self.action = action
-            self.wtr_date = wtr_date
-            self.rng_date = rng_date
-            self.rd_date = rd_date
-
+    def get_books(self):
+        cursor = self.db.cursor()
+        cursor.execute('SELECT work_id, action, wtr_date, rng_date, rd_date FROM user_books WHERE username = %s;', (self.username,))
+        books = cursor.fetchall()
+        print(books)
+        cursor.close()
+        userbooks = []
+        for book in books:
+            book_data = BookData.from_work_id(book[0])
+            userbooks.append(UserBook(self.username, book_data, book[1], book[2], book[3], book[4]))
+        return userbooks
 
 class UserExistsException(Exception): ...

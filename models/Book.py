@@ -3,6 +3,7 @@ import urllib.parse
 
 import requests
 
+import models.db
 from models.db import get_db
 
 
@@ -23,7 +24,7 @@ class BookData:
         try:
             # check in database first
             db = get_db()
-            cursor = db.db.cursor()
+            cursor = db.cursor()
             cursor.execute('SELECT title, author, description, cover, subjects FROM book_data WHERE work_id = %s;', (work_id,))
             db_book_data = cursor.fetchone()
             if db_book_data:
@@ -57,7 +58,7 @@ class BookData:
             # cache in database
             cursor.execute('INSERT INTO book_data (work_id, title, author, description, cover, subjects) VALUES (%s, %s, %s, %s, %s, %s);', (work_id, book_data['title'], author, description, cover, json.dumps(subjects)))
             cursor.close()
-            db.db.commit()
+            models.db.db.commit()
             return BookData(work_id, book_data['title'], author, description, cover, subjects)
         except Exception as e:
             print(e)

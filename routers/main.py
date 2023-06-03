@@ -21,4 +21,6 @@ def login(response: Response):
 
 @router.get("/")
 def root(request: Request, user: CurrentUserDep):
+    userbooks = user.get_books()
+    print(userbooks)
     return templates.TemplateResponse('home.html', {'request': request})

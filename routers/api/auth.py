@@ -9,6 +9,7 @@ from passlib.context import CryptContext
 from models.Database import UserExistsException
 from models.db import get_db
 
+
 class StatusCode:
     UserExists = 600
     IncorrectCredentials = 601
