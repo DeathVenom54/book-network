@@ -1,8 +1,20 @@
 import mysql.connector as connector
-from models.Book import BookData
 
+# Singleton pattern, only one instance of Database
+# can exist and can be called from anywhere
 
 class Database:
+    instance = None
+    host = None
+    user = None
+    password = None
+    db = None
+
+    def __new__(cls, host, user, password):
+        if cls.instance == None:
+            cls.instance = super(Database, cls).__new__(cls)
+        return cls.instance
+
     def __init__(self, host, user, password):
         self.host = host
         self.user = user
@@ -40,16 +52,6 @@ class Database:
         else:
             return None
 
-class UserBook:
-    def __init__(self, username, book_data, action, wtr_date=None, rng_date=None, rd_date=None):
-        self.username = username
-        self.book_data = book_data
-        self.action = action
-        self.wtr_date = wtr_date
-        self.rng_date = rng_date
-        self.rd_date = rd_date
-
-
 class User:
     def __init__(self, username, password, db, display_name = None, bio = None):
         self.username = username
@@ -70,17 +72,5 @@ class User:
         self.db.commit()
         self.display_name = dn
         self.bio = b
-
-    def get_books(self):
-        cursor = self.db.cursor()
-        cursor.execute('SELECT work_id, action, wtr_date, rng_date, rd_date FROM user_books WHERE username = %s;', (self.username,))
-        books = cursor.fetchall()
-        print(books)
-        cursor.close()
-        userbooks = []
-        for book in books:
-            book_data = BookData.from_work_id(book[0])
-            userbooks.append(UserBook(self.username, book_data, book[1], book[2], book[3], book[4]))
-        return userbooks
 
 class UserExistsException(Exception): ...

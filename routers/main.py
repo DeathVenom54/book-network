@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, Response
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+
 from routers.api.auth import CurrentUserDep
 
 router = APIRouter()

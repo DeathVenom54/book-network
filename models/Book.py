@@ -2,10 +2,7 @@ import json
 import urllib.parse
 
 import requests
-
-import models.db
-from models.db import get_db
-
+from models.Database import Database
 
 class BookData:
     def __init__(self, work_id, title, author, description, cover, subjects):
@@ -23,7 +20,7 @@ class BookData:
     def from_work_id(work_id):
         try:
             # check in database first
-            db = get_db()
+            db = Database()
             cursor = db.cursor()
             cursor.execute('SELECT title, author, description, cover, subjects FROM book_data WHERE work_id = %s;', (work_id,))
             db_book_data = cursor.fetchone()
@@ -58,12 +55,31 @@ class BookData:
             # cache in database
             cursor.execute('INSERT INTO book_data (work_id, title, author, description, cover, subjects) VALUES (%s, %s, %s, %s, %s, %s);', (work_id, book_data['title'], author, description, cover, json.dumps(subjects)))
             cursor.close()
-            models.db.db.commit()
+            db.db.commit()
             return BookData(work_id, book_data['title'], author, description, cover, subjects)
         except Exception as e:
             print(e)
             return None
 
+class UserBook:
+    def __init__(self, username, book_data, action, wtr_date=None, rng_date=None, rd_date=None):
+        self.username = username
+        self.book_data = book_data
+        self.action = action
+        self.wtr_date = wtr_date
+        self.rng_date = rng_date
+        self.rd_date = rd_date
+
+    def get_books_for_user(self, username):
+        cursor = Database().db.cursor()
+        cursor.execute('SELECT work_id, action, wtr_date, rng_date, rd_date FROM user_books WHERE username = %s;', (username,))
+        books = cursor.fetchall()
+        cursor.close()
+        userbooks = []
+        for book in books:
+            book_data = BookData.from_work_id(book[0])
+            userbooks.append(UserBook(username, book_data, book[1], book[2], book[3], book[4]))
+        return userbooks
 
 def search_books(title):
     q = urllib.parse.urlencode({'title': title, 'fields': 'key,type'})
@@ -76,3 +92,4 @@ def search_books(title):
         if doc['type'] == 'work':
             ids.append(doc['key'].split('/')[-1])
     return ids if len(ids) > 0 else None
+

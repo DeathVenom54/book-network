@@ -6,8 +6,7 @@ from fastapi.responses import RedirectResponse
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 
-from models.Database import UserExistsException
-from models.db import get_db
+from models.Database import UserExistsException, Database
 
 
 class StatusCode:
@@ -23,7 +22,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 1 week
 class RequiresLoginException(Exception): ...
 
 async def current_user(req: Request):
-    db = get_db()
+    db = Database()
     token = req.cookies.get('token')
     if token is None:
         raise RequiresLoginException()
@@ -45,7 +44,7 @@ CurrentUserDep = Annotated[str, Depends(current_user)]
 
 @router.post('/login')
 async def login(req: Request, username: str = Form(), password: str = Form()):
-    db = get_db()
+    db = Database()
     user = db.get_user(username)
     if user and pwd_context.verify(password, user.password):
         res = RedirectResponse(url='/', status_code=302)
@@ -57,7 +56,7 @@ async def login(req: Request, username: str = Form(), password: str = Form()):
 @router.post('/register')
 async def login(req: Request, username= Form(), password= Form(), display_name = Form(default=None), bio = Form(default=None)):
     try:
-        db = get_db()
+        db = Database()
         db.create_user(username, hash_password(password), display_name, bio)
         res = RedirectResponse(url='/', status_code=302)
         res.set_cookie(key='token', value=create_token(username, req.client.host))
