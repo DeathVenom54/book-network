@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from models.Book import BookData
 
-router = APIRouter(prefix='/api/books')
+router = APIRouter(prefix='/books')
 
 @router.get('/{work_id}')
 async def get_book(work_id):

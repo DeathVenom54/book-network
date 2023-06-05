@@ -71,7 +71,8 @@ class UserBook:
         self.rd_date = rd_date
 
     def get_books_for_user(self, username):
-        cursor = Database().db.cursor()
+        db = Database()
+        cursor = db.db.cursor()
         cursor.execute('SELECT work_id, action, wtr_date, rng_date, rd_date FROM user_books WHERE username = %s;', (username,))
         books = cursor.fetchall()
         cursor.close()

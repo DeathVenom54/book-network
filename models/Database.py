@@ -2,20 +2,19 @@ import mysql.connector as connector
 
 # Singleton pattern, only one instance of Database
 # can exist and can be called from anywhere
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
 
-class Database:
-    instance = None
+class Database(metaclass=Singleton):
     host = None
     user = None
     password = None
-    db = None
 
-    def __new__(cls, host, user, password):
-        if cls.instance == None:
-            cls.instance = super(Database, cls).__new__(cls)
-        return cls.instance
-
-    def __init__(self, host, user, password):
+    def __init__(self, host='', user='', password=''):
         self.host = host
         self.user = user
         self.password = password
