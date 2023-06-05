@@ -57,7 +57,6 @@ async def login(req: Request, username: str = Form(), password: str = Form()):
 async def login(req: Request, username= Form(), password= Form(), display_name = Form(default=None), bio = Form(default=None)):
     try:
         db = Database()
-        print(id(db.db))
         db.create_user(username, hash_password(password), display_name, bio)
         res = RedirectResponse(url='/', status_code=302)
         res.set_cookie(key='token', value=create_token(username, req.client.host))

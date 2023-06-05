@@ -21,7 +21,7 @@ class BookData:
         try:
             # check in database first
             db = Database()
-            cursor = db.cursor()
+            cursor = db.db.cursor()
             cursor.execute('SELECT title, author, description, cover, subjects FROM book_data WHERE work_id = %s;', (work_id,))
             db_book_data = cursor.fetchone()
             if db_book_data:
@@ -70,7 +70,8 @@ class UserBook:
         self.rng_date = rng_date
         self.rd_date = rd_date
 
-    def get_books_for_user(self, username):
+    @staticmethod
+    def get_books_for_user(username):
         db = Database()
         cursor = db.db.cursor()
         cursor.execute('SELECT work_id, action, wtr_date, rng_date, rd_date FROM user_books WHERE username = %s;', (username,))
@@ -81,6 +82,26 @@ class UserBook:
             book_data = BookData.from_work_id(book[0])
             userbooks.append(UserBook(username, book_data, book[1], book[2], book[3], book[4]))
         return userbooks
+
+    @staticmethod
+    def upsert_user_book(username, work_id, action):
+        if action not in ['wtr', 'rng', 'rd']:
+            raise Exception('Invalid action')
+        action_int = 0
+        if action == 'rng':
+            action_int = 1
+        elif action == 'rd':
+            action_int = 2
+
+        db= Database()
+        cursor = db.db.cursor()
+        cursor.execute('SELECT * FROM user_books WHERE username = %s AND work_id = %s;', (username, work_id))
+        if cursor.fetchone():
+            cursor.execute('UPDATE user_books SET action = %s, %s_date = CURDATE() WHERE username = %s AND work_id = %s;', (action_int, action, username, work_id))
+        else:
+            cursor.execute('INSERT INTO user_books (username, work_id, action, %s_date) VALUES (%s, %s, %s);', (action, username, work_id, action_int))
+        cursor.close()
+        db.db.commit()
 
 def search_books(title):
     q = urllib.parse.urlencode({'title': title, 'fields': 'key,type'})

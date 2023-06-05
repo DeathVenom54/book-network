@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, Response
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 
+from models.Book import UserBook
 from routers.api.auth import CurrentUserDep
 
 router = APIRouter()
@@ -22,6 +23,6 @@ def login(response: Response):
 
 @router.get("/")
 def root(request: Request, user: CurrentUserDep):
-    userbooks = user.get_books()
+    userbooks = UserBook.get_books_for_user(user.username)
     print(userbooks)
-    return templates.TemplateResponse('home.html', {'request': request})
+    return templates.TemplateResponse('home.html', {'request': request, 'user': user.__dict__})
