@@ -62,7 +62,7 @@ class BookData:
             return None
 
 class UserBook:
-    def __init__(self, username, book_data, action, wtr_date=None, rng_date=None, rd_date=None):
+    def __init__(self, username, book_data: BookData, action, wtr_date=None, rng_date=None, rd_date=None):
         self.username = username
         self.book_data = book_data
         self.action = action
@@ -70,13 +70,30 @@ class UserBook:
         self.rng_date = rng_date
         self.rd_date = rd_date
 
+    def to_dict(self):
+        book_data = self.book_data.__dict__
+        wtr_date = self.wtr_date.isoformat() if self.wtr_date else None
+        rng_date = self.rng_date.isoformat() if self.rng_date else None
+        rd_date = self.rd_date.isoformat() if self.rd_date else None
+        return {'username': self.username, 'book_data': book_data, 'action': self.action, 'wtr_date': wtr_date, 'rng_date': rng_date, 'rd_date':rd_date}
+
     @staticmethod
-    def get_books_for_user(username):
+    def get_books_for_user(username, work_id=None):
         db = Database()
         cursor = db.db.cursor()
-        cursor.execute('SELECT work_id, action, wtr_date, rng_date, rd_date FROM user_books WHERE username = %s;', (username,))
+        if work_id:
+            cursor.execute('SELECT work_id, action, wtr_date, rng_date, rd_date FROM user_books WHERE username = %s AND work_id = %s;', (username, work_id))
+        else:
+            cursor.execute('SELECT work_id, action, wtr_date, rng_date, rd_date FROM user_books WHERE username = %s;', (username,))
         books = cursor.fetchall()
         cursor.close()
+        if work_id:
+            if len(books) == 0:
+                return None
+            raw_book = books[0]
+            book_data = BookData.from_work_id(raw_book[0])
+            return UserBook(username, book_data, raw_book[1], raw_book[2], raw_book[3], raw_book[4])
+
         userbooks = []
         for book in books:
             book_data = BookData.from_work_id(book[0])
@@ -97,9 +114,9 @@ class UserBook:
         cursor = db.db.cursor()
         cursor.execute('SELECT * FROM user_books WHERE username = %s AND work_id = %s;', (username, work_id))
         if cursor.fetchone():
-            cursor.execute('UPDATE user_books SET action = %s, %s_date = CURDATE() WHERE username = %s AND work_id = %s;', (action_int, action, username, work_id))
+            cursor.execute(f'UPDATE user_books SET action = %s, {action}_date = CURDATE() WHERE username = %s AND work_id = %s;', (action_int, username, work_id))
         else:
-            cursor.execute('INSERT INTO user_books (username, work_id, action, %s_date) VALUES (%s, %s, %s);', (action, username, work_id, action_int))
+            cursor.execute(f'INSERT INTO user_books (username, work_id, action, {action}_date) VALUES (%s, %s, %s, CURDATE());', (username, work_id, action_int))
         cursor.close()
         db.db.commit()
 

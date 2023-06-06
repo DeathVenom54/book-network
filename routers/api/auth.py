@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Form, Response, Request, Depends
+from fastapi import APIRouter, Form, Request, Depends
 from fastapi.responses import RedirectResponse
 from jose import jwt, JWTError
 from passlib.context import CryptContext

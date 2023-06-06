@@ -12,7 +12,12 @@
 - fixed singleton errors
 - tested `/books/{work_id}`, working
 - added `upsert_user_book` to `UserBook` class
-- **todos:**
-    - add buttons to set book action
-    - add books list on home page
-    - Read up on Jinja templating and improve html
+
+**06-06-23**
+- added dummy buttons on `/books/{work_id}`
+- added basic javascript code
+
+**todos:**
+  - hook up buttons with js
+  - add books list on home page
+  - Read up on Jinja templating and improve html
