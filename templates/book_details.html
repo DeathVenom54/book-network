@@ -7,12 +7,20 @@
     const book = {{ book | tojson | safe }}
     const userBook = {{ user_book | tojson | safe }}
     const actions = ['wtr', 'rng', 'rd']
-    if (userBook) {
-      const action = actions[userBook.action]
-      const label = document.getElementById(action)
-      if (label) label.style.display = 'block'
-    }
 
+    function setBookStatus(e) {
+      const action = e.name
+      fetch(`/api/books/${book.work_id}/${action}`, {
+        method: 'POST',
+      }).then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            location.reload()
+          } else {
+            console.log('Error: ', data.error)
+          }
+        })
+    }
   </script>
   <style lang="css">
     #wtr, #rng, #rd {
@@ -22,13 +30,20 @@
 </head>
 <body>
 <h1>{{book.title}}</h1>
+<img src="https://covers.openlibrary.org/b/id/{{book.cover}}-M.jpg" alt="Cover image">
 <p>{{book.description}}</p>
 <p>Author: {{book.author}}</p>
-<p id="wtr">This book is on your wishlist</p>
-<p id="rng">You are currently reading this book</p>
-<p id="rd">You have alread read this book</p>
-<button onclick="">Want to read</button>
-<button onclick="">Reading</button>
-<button onclick="">Read</button>
+{% if user_book %}
+  {% if user_book.action == 0 %}
+    <p>Want to read</p>
+  {% elif user_book.action == 1 %}
+    <p>Reading</p>
+  {% elif user_book.action == 2 %}
+    <p>Finished reading</p>
+  {% endif %}
+{% endif %}
+<button name="wtr" onclick="setBookStatus(this)">Want to read</button>
+<button name="rng" onclick="setBookStatus(this)">Reading</button>
+<button name="rd" onclick="setBookStatus(this)">Finished reading</button>
 </body>
 </html>

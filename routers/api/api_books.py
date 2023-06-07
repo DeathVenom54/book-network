@@ -10,9 +10,9 @@ router = APIRouter(prefix='/api/books')
 async def get_book(work_id, action, user: CurrentUserDep):
     try:
         if action not in ['wtr', 'rng', 'rd']:
-            return RedirectResponse(url=f'/books/{work_id}', status_code=302)
+            return {'error': 'Invalid action'}
         UserBook.upsert_user_book(user.username, work_id, action)
-        return RedirectResponse(url=f'/books/{work_id}', status_code=302)
+        return {'success': True, 'error': None}
     except Exception as e:
         print(e)
         return None
