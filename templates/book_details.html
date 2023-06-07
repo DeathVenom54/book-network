@@ -1,49 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Book Network | {{ book.title }}</title>
-  <script>
-    const book = {{ book | tojson | safe }}
-    const userBook = {{ user_book | tojson | safe }}
-    const actions = ['wtr', 'rng', 'rd']
+{% extends "base.html" %}
 
-    function setBookStatus(e) {
-      const action = e.name
-      fetch(`/api/books/${book.work_id}/${action}`, {
-        method: 'POST',
-      }).then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            location.reload()
-          } else {
-            console.log('Error: ', data.error)
-          }
-        })
-    }
-  </script>
-  <style lang="css">
-    #wtr, #rng, #rd {
-      display: none;
-    }
-  </style>
-</head>
-<body>
+{% block title %} {{book.title}} | Book Network {% endblock title %}
+
+{% block script %}
+<script>
+  const book = {{ book | tojson | safe }}
+  function setBookStatus(e) {
+    const action = e.name
+    fetch(`/api/books/${book.work_id}/${action}`, {
+      method: 'POST',
+    }).then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          location.reload()
+        } else {
+          console.log('Error: ', data.error)
+        }
+      })
+</script>
+{% endblock script %}
+
+{% block content %}
 <h1>{{book.title}}</h1>
 <img src="https://covers.openlibrary.org/b/id/{{book.cover}}-M.jpg" alt="Cover image">
 <p>{{book.description}}</p>
 <p>Author: {{book.author}}</p>
 {% if user_book %}
-  {% if user_book.action == 0 %}
-    <p>Want to read</p>
-  {% elif user_book.action == 1 %}
-    <p>Reading</p>
-  {% elif user_book.action == 2 %}
-    <p>Finished reading</p>
-  {% endif %}
+{% if user_book.action == 0 %}
+<p>Want to read</p>
+{% elif user_book.action == 1 %}
+<p>Reading</p>
+{% elif user_book.action == 2 %}
+<p>Finished reading</p>
+{% endif %}
 {% endif %}
 <button name="wtr" onclick="setBookStatus(this)">Want to read</button>
 <button name="rng" onclick="setBookStatus(this)">Reading</button>
 <button name="rd" onclick="setBookStatus(this)">Finished reading</button>
-</body>
-</html>
+{% endblock content %}

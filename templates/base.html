@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Temp title{% endblock %}</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  {% block script %}{% endblock script %}
+</head>
+<body>
+{% block content %}
+<h1>Content is not defined</h1>
+{% endblock %}
+</body>
+</html>
