@@ -17,7 +17,11 @@
 - added dummy buttons on `/books/{work_id}`
 - added basic javascript code
 
+**07-06-23**
+- implemented working book action buttons
+- organised html with Jinja layouts
+- added bulma css
+
 **todos:**
-  - hook up buttons with js
   - add books list on home page
-  - Read up on Jinja templating and improve html
+  - make it look decent

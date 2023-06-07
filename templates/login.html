@@ -3,10 +3,15 @@
 {% block title %}Book Network | Login{% endblock title %}
 
 {% block content %}
-<h1>Login page</h1>
-<form action="/api/auth/login" method="post">
-  <input type="text" name="username" placeholder="Username">
-  <input type="password" name="password" placeholder="Password">
-  <button type="submit">Login</button>
-</form>
+<div class="container is-4">
+  <h1>Login page</h1>
+  <form action="/api/auth/login" method="post">
+    <div class="field">
+      <label class="label" for="username">Username</label>
+      <input id="username" name="username" class="input" type="text" placeholder="Username">
+    </div>
+    <input type="password" name="password" placeholder="Password">
+    <button type="submit">Login</button>
+  </form>
+</div>
 {% endblock content %}
