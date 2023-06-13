@@ -6,11 +6,10 @@
 <div class="container is-4">
   <h1>Login page</h1>
   <form action="/api/auth/login" method="post">
-    <div class="field">
-      <label class="label" for="username">Username</label>
-      <input id="username" name="username" class="input" type="text" placeholder="Username">
-    </div>
-    <input type="password" name="password" placeholder="Password">
+    <label for="username">Username</label>
+    <input id="username" name="username" class="input" type="text" placeholder="Username">
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" placeholder="Password">
     <button type="submit">Login</button>
   </form>
 </div>

@@ -22,6 +22,11 @@
 - organised html with Jinja layouts
 - added bulma css
 
+**13-06-23**
+- removed bulma, will use own css
+- added normalize.css
+- added db books to home page (rough)
+
 **todos:**
-  - add books list on home page
-  - make it look decent
+  - add search routes
+  - make search page

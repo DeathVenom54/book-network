@@ -78,7 +78,7 @@ class UserBook:
         return {'username': self.username, 'book_data': book_data, 'action': self.action, 'wtr_date': wtr_date, 'rng_date': rng_date, 'rd_date':rd_date}
 
     @staticmethod
-    def get_books_for_user(username, work_id=None):
+    def get_books_for_user(username, work_id=None, dict=False):
         db = Database()
         cursor = db.db.cursor()
         if work_id:
@@ -97,7 +97,10 @@ class UserBook:
         userbooks = []
         for book in books:
             book_data = BookData.from_work_id(book[0])
-            userbooks.append(UserBook(username, book_data, book[1], book[2], book[3], book[4]))
+            if dict:
+                userbooks.append(UserBook(username, book_data, book[1], book[2], book[3], book[4]).to_dict())
+            else:
+                userbooks.append(UserBook(username, book_data, book[1], book[2], book[3], book[4]))
         return userbooks
 
     @staticmethod

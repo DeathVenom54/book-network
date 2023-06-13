@@ -23,6 +23,6 @@ def login(response: Response):
 
 @router.get("/")
 def root(request: Request, user: CurrentUserDep):
-    userbooks = UserBook.get_books_for_user(user.username)
-    print(userbooks)
-    return templates.TemplateResponse('home.html', {'request': request, 'user': user.__dict__})
+    user_books = UserBook.get_books_for_user(user.username, dict=True)
+    print(user_books)
+    return templates.TemplateResponse('home.html', {'request': request, 'user': user.__dict__, 'user_books': user_books})

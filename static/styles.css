@@ -1,0 +1,28 @@
+:root {
+    --turquoise: #22A699;
+    --yellow: #F2BE22;
+    --orange: #F29727;
+    --red: #F24C3D;
+}
+
+body {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 60px;
+    align-items: flex-start;
+}
+
+.book_details img {
+    height: 200px;
+    align-self: center;
+}

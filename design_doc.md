@@ -27,3 +27,5 @@ API Routes:
         /$id
         /recommend
 ```
+
+[Color palette](https://colorhunt.co/palette/22a699f2be22f29727f24c3d)

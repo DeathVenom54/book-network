@@ -7,4 +7,13 @@
 <p><strong>{{user.username}}</strong></p>
 <p>{{user.bio}}</p>
 <p>{{user.display_name}}</p>
+<h2>Your books</h2>
+{% for book in user_books %}
+<div class="book">
+  <a href="/books/{{book.book_data.work_id}}">
+    <img src="https://covers.openlibrary.org/b/id/{{book.book_data.cover}}-S.jpg" alt="Cover image">
+    <span>{{book.book_data.title}}</span>
+  </a>
+</div>
+{% endfor %}
 {% endblock content %}
