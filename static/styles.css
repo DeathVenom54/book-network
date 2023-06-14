@@ -9,6 +9,27 @@ body {
     font-family: 'Noto Sans', sans-serif;
 }
 
+header nav {
+    background-color: var(--yellow);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 40px;
+}
+
+header nav a {
+    text-decoration: none;
+    font-size: 20px;
+    color: royalblue;
+}
+
+header nav a:hover {
+    color: cornflowerblue;
+    text-decoration: underline;
+    transition: all 100ms ease-in-out;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
 }
