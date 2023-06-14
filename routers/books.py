@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 
-from models.Book import BookData, UserBook
+from models.Book import BookData, UserBook, search_books
 from routers.api.auth import CurrentUserDep
 
 router = APIRouter(prefix='/books')
 templates = Jinja2Templates(directory='templates')
 
+@router.get('/search')
+async def get_book(req: Request, user: CurrentUserDep, q: str = ''):
+    books = search_books(q)
+    return templates.TemplateResponse('book_search.html', {'request': req, 'query': q, 'books': books})
 
 @router.get('/{work_id}')
 async def get_book(work_id, req: Request, user: CurrentUserDep):

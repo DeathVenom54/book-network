@@ -26,7 +26,11 @@
 <div class="book_details container">
   <h1>{{book.title}}</h1>
   <img src="https://covers.openlibrary.org/b/id/{{book.cover}}-M.jpg" alt="Cover image">
-  <p>{{book.description}}</p>
+  {% if book.description %}
+    <p>{{book.description}}</p>
+  {% else %}
+    <p>No description available</p>
+  {% endif %}
   <p>Author: {{book.author}}</p>
   {% if user_book %}
   {% if user_book.action == 0 %}

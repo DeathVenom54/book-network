@@ -123,15 +123,20 @@ class UserBook:
         cursor.close()
         db.db.commit()
 
-def search_books(title):
-    q = urllib.parse.urlencode({'title': title, 'fields': 'key,type'})
+def search_books(title, limit = 10):
+    q = urllib.parse.urlencode({'q': title, 'limit': limit})
     res = requests.get(f'https://openlibrary.org/search.json?{q}')
     if res.status_code != 200:
         return None
     data = res.json()
-    ids = []
+    books = []
     for doc in data['docs']:
         if doc['type'] == 'work':
-            ids.append(doc['key'].split('/')[-1])
-    return ids if len(ids) > 0 else None
+            work_id = doc['key'].split('/')[-1]
+            title = doc['title']
+            author = doc['author_name'][0] if 'author_name' in doc else 'unknown'
+            cover = doc['cover_i'] if 'cover_i' in doc else None
+            books.append({'work_id': work_id, 'title': title, 'author': author, 'cover': cover})
+            books.sort(key=lambda x: 1 if x['cover'] else 0, reverse=True)
+    return books if len(books) > 0 else None
 

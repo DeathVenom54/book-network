@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %} {{query}} | Book Network {% endblock title %}
+
+{% block content %}
+<div class="book_details container">
+  <h1>Search</h1>
+  <form action="/books/search">
+    <input id="textbox" name="q" type="text" value="{{query}}" size="40" />
+    <input type="submit" value="Search" />
+  </form>
+  <p>Results for "{{query}}":</p>
+  {% for book in books %}
+  <div class="book">
+    <a href="/books/{{book.work_id}}">
+      <img src="https://covers.openlibrary.org/b/id/{{book.cover}}-M.jpg" alt="Cover image">
+      <p>{{book.title}}</p>
+      <p>{{book.author}}</p>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock content %}
