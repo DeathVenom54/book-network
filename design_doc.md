@@ -4,16 +4,15 @@ HTML Routes:
 ```
 /login
 /signup
-/home:      currently reading
-            friends reading
-            past books (add a review)
-            recommended books based on author and genre
-    /home/my-books:    currently reading and past books
+/update:    update username, bio, password
+/:          currently reading books, wishlist and friends updates (preview)
+            recommended books based on author and genre (preview)
+/my-books:    currently reading, wishlist and past books
     
 /friends:   add and manage friends
-    /friends/add:   add a new friend
+            see friend updates (started new book, finished reading, etc)
     /friend/$id:    detailed friend view
-/books:     search and browse books
+/books:     search and browse books (algorithm will recommend books for you)
     /books/$id: detailed book view
 ```
 
@@ -23,9 +22,6 @@ API Routes:
     /auth
         /login
         /signup
-    /books
-        /$id
-        /recommend
 ```
 
-[Color palette](https://colorhunt.co/palette/22a699f2be22f29727f24c3d)
+[Palette](https://colorhunt.co/palette/025464e57c23e8aa42f8f1f1)
