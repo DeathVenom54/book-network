@@ -3,23 +3,51 @@
 {% block title %} Home | Book Network {% endblock title %}
 
 {% block content %}
+<div id="user-header">
+  <h1 class="white">Welcome back, {{user.username}}</h1>
+  <span class="text-1">What will you read next?</span>
+</div>
 <div class="container">
-  <h1>This is the home page</h1>
-  <form action="/books/search">
-    <input id="textbox" name="q" type="text" value="" size="40" />
-    <input type="submit" value="Search" />
-  </form>
-  <p><strong>{{user.username}}</strong></p>
-  <p>{{user.bio}}</p>
-  <p>{{user.display_name}}</p>
-  <h2>Your books</h2>
-  {% for book in user_books %}
-  <div class="book">
-    <a href="/books/{{book.book_data.work_id}}">
-      <img src="https://covers.openlibrary.org/b/id/{{book.book_data.cover}}-S.jpg" alt="Cover image">
-      <span>{{book.book_data.title}}</span>
-    </a>
+  <div class="section">
+    <h1>Bookshelf</h1>
+    <div class="book-holder">
+      {% for book in user_books if book.action == 1 %}
+      <a href="/books/{{book.book_data.work_id}}" class="book">
+        <img src="https://covers.openlibrary.org/b/id/{{book.book_data.cover}}-M.jpg" alt="cover for {{book.book_data.cover}}">
+        <div class="book-data">
+          <span class="title">{{book.book_data.title}}</span>
+          <span class="author">{{book.book_data.author}}</span>
+          <span class="action">Currently reading</span>
+        </div>
+      </a>
+      {% endfor %}
+      {% for book in user_books if book.action == 2 %}
+      <a href="/books/{{book.book_data.work_id}}" class="book">
+        <img src="https://covers.openlibrary.org/b/id/{{book.book_data.cover}}-S.jpg" alt="cover for {{book.book_data.cover}}">
+        <div class="book-data">
+          <span class="title">{{book.book_data.title}}</span>
+          <span class="author">{{book.book_data.author}}</span>
+          <span class="action">Finished reading</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
   </div>
-  {% endfor %}
+
+  <div class="section">
+    <h1>Wishlist</h1>
+    <div class="book-holder">
+      {% for book in user_books if book.action == 0 %}
+      <a href="/books/{{book.book_data.work_id}}" class="book">
+        <img src="https://covers.openlibrary.org/b/id/{{book.book_data.cover}}-S.jpg" alt="cover for {{book.book_data.cover}}">
+        <div class="book-data">
+          <span class="title">{{book.book_data.title}}</span>
+          <span class="author">{{book.book_data.author}}</span>
+<!--          <span class="action">Currently reading</span>-->
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 {% endblock content %}

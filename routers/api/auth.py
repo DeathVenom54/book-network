@@ -63,6 +63,12 @@ async def login(req: Request, username= Form(), password= Form(), display_name =
     except UserExistsException:
         return RedirectResponse(url='/register', status_code=302)
 
+@router.post('/update')
+async def update(user: CurrentUserDep, username=Form(), password=Form(default=None), display_name=Form(default=None), bio=Form(default=None)):
+    try:
+        user
+
+
 def create_token(username, ip):
     expires = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     return jwt.encode({'username': username, 'last_ip': ip, 'exp': expires}, SECRET_KEY, algorithm=ALGORITHM)

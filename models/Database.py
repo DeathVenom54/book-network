@@ -1,5 +1,5 @@
 import mysql.connector as connector
-
+from routers.api.auth import hash_password
 # Singleton pattern, only one instance of Database
 # can exist and can be called from anywhere
 class Singleton(type):
@@ -62,13 +62,63 @@ class User:
     def get_safe_user(self):
         return User(self.username, '', self.db, self.display_name, self.bio)
 
-    def update(self, display_name = None, bio = None):
+    def get_friends(self):
+        cursor = self.db.cursor()
+        cursor.execute('SELECT user1, user2 FROM friends WHERE user1 = ? OR user2 = ?', (self.username, self.username))
+        rows = cursor.fetchall()
+        cursor.close()
+        friends = []
+        for row in rows:
+            username = row[0] if row[1] == self.username else row[1]
+            friends.append(self.db.get_user(username))
+        return friends
+
+    def get_friend_reqs(self):
+        cursor = self.db.cursor()
+        cursor.execute('SELECT u_from, u_to FROM friend_requests WHERE u_from = ? OR u_to = ?', (self.username, self.username))
+        rows = cursor.fetchall()
+        sent = []
+        received = []
+        for row in rows:
+            if row[0] == self.username:
+                user = self.db.get_user(row[1])
+                sent.append(user)
+            else:
+                user = self.db.get_user(row[1])
+                received.append(user)
+        cursor.close()
+        return {'sent': sent, 'received': received}
+
+    def accept_friend_req(self, other):
+        cursor = self.db.cursor()
+        cursor.execute('SELECT * FROM friend_requests WHERE u_to = ?', (self.username,))
+        if not cursor.fetchone:
+            raise Exception('No request found')
+        cursor.execute('INSERT INTO friends VALUES (?, ?)', (self.username, other))
+        cursor.execute('DELETE FROM friend_requests WHERE u_to = ? AND u_from = ?', (self.username, other))
+        cursor.close()
+        self.db.commit()
+
+    def send_friend_req(self, other):
+        cursor = self.db.cursor()
+        cursor.execute('INSERT INTO friend_requests (u_from, u_to) VALUES (?, ?)', (self.username, other))
+        cursor.close()
+        self.db.commit()
+
+
+    def update(self, username=None, password=None, display_name = None, bio = None):
         cursor = self.db.cursor()
         dn = display_name if display_name else self.display_name
         b = bio if bio else self.bio
-        cursor.execute('UPDATE users SET display_name = %s, bio = %s WHERE username = %s;', (dn, b, self.username))
+        un = username if username else self.username
+        p = password if password else self.password
+        if p == '':
+            raise Exception('Cannot update user without password')
+        cursor.execute('UPDATE users SET username = %s, password = %s, display_name = %s, bio = %s WHERE username = %s;', (un, hash_password(p), dn, b, self.username))
         cursor.close()
         self.db.commit()
+        self.username = un
+        self.password = p
         self.display_name = dn
         self.bio = b
 
