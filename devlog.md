@@ -27,6 +27,6 @@
 - added normalize.css
 - added db books to home page (rough)
 
-**todos:**
-  - add search routes
-  - make search page
+**01-07-23**
+- improved styles
+- added friend db methods
